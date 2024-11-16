@@ -3,13 +3,15 @@
 
 import os
 import sys
-from PyQt4.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from twine_to_rpy_model import TwineToRenpy
 
 
 class TwineToRenpyView(QWidget):
     def __init__(self):
-        super(TwineToRenpyView, self).__init__()
+        super().__init__()
 
         self.model = TwineToRenpy()
 
@@ -196,7 +198,7 @@ class TwineToRenpyView(QWidget):
 
         # Create the term replace UI
         for i, char_dict in enumerate(self.model.custom_char_replace_list):
-            for og_char, new_char in char_dict.iteritems():
+            for og_char, new_char in char_dict.items():
                 # Create widgets
                 og_char_le = QLineEdit(og_char, self)
                 new_char_le = QLineEdit(new_char, self)
@@ -287,9 +289,10 @@ class TwineToRenpyView(QWidget):
         Args:
             lineedit: (lineedit) The lineedit displaying the filepath
         """
-        filepath = QFileDialog().getOpenFileName(self, 'Select file', '/', 'HTML files (*.html)')
+        filepath, _ = QFileDialog.getOpenFileName(self, 'Select file', '/', 'HTML files (*.html)')
         if filepath:
             lineedit.setText(filepath)
+
 
     def get_dir(self, lineedit):
         """
@@ -298,7 +301,7 @@ class TwineToRenpyView(QWidget):
         Args:
             lineedit: (lineedit) The lineedit displaying the directory
         """
-        file_dir = QFileDialog().getExistingDirectory(self, 'Select directory')
+        file_dir = QFileDialog.getExistingDirectory(self, 'Select directory')
         if file_dir:
             lineedit.setText(file_dir)
 
@@ -545,7 +548,7 @@ class TwineToRenpyView(QWidget):
 
         # Remake the replace terms UI
         for i, char_dict in enumerate(self.model.custom_char_replace_list):
-            for og_char, new_char in char_dict.iteritems():
+            for og_char, new_char in char_dict.items():
                 # Create widgets
                 og_char_le = QLineEdit(og_char, self)
                 new_char_le = QLineEdit(new_char, self)
