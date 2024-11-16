@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twine to Ren'Py Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Twine to Ren'Py Converter</h1>
+    <form id="converter-form" enctype="multipart/form-data">
+        <label for="html_file">Upload Twine HTML File:</label>
+        <input type="file" id="html_file" name="html_file" required>
+
+        <button type="submit">Convert</button>
+    </form>
+
+    <div id="response-message" style="margin-top: 20px;"></div>
+
+    <script>
+        document.getElementById('converter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const response = await fetch('/convert', {
+                method: 'POST',
+                body: formData
+            });
+
+            const messageDiv = document.getElementById('response-message');
+            messageDiv.innerHTML = '';
+
+            if (response.ok) {
+                const data = await response.json();
+                messageDiv.innerHTML = `<p style="color: green;">${data.message}</p>`;
+
+                // Add download links for each file
+                data.download_urls.forEach(url => {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = '';
+                    link.textContent = `Download ${url.split('/').pop()}`;
+                    messageDiv.appendChild(link);
+                    messageDiv.appendChild(document.createElement('br'));
+                });
+            } else {
+                const data = await response.json();
+                messageDiv.innerHTML = `<p style="color: red;">${data.error}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
